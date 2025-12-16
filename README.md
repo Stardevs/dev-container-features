@@ -16,6 +16,8 @@ A collection of devcontainer features for cloud-native development tools.
 | [argo-cli](src/argo-cli) | Argo CD, Workflows, and Rollouts CLI tools |
 | [istio-cli](src/istio-cli) | Istio CLI (istioctl) |
 | [cilium-cli](src/cilium-cli) | Cilium CLI with optional Hubble |
+| [wireguard](src/wireguard) | WireGuard VPN tools with optional boringtun |
+| [wss](src/wss) | WebSocket tools, wstunnel, Cloudflare Tunnel, and Wrangler |
 
 ## Usage
 

@@ -1,0 +1,38 @@
+{
+    "websocket-only": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "wss": {
+                "installWscat": true,
+                "installWebsocat": true,
+                "installWstunnel": false,
+                "installCloudflared": false,
+                "installWrangler": false
+            }
+        }
+    },
+    "cloudflare-only": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "wss": {
+                "installWscat": false,
+                "installWebsocat": false,
+                "installWstunnel": false,
+                "installCloudflared": true,
+                "installWrangler": true
+            }
+        }
+    },
+    "tunneling-only": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "wss": {
+                "installWscat": false,
+                "installWebsocat": false,
+                "installWstunnel": true,
+                "installCloudflared": true,
+                "installWrangler": false
+            }
+        }
+    }
+}

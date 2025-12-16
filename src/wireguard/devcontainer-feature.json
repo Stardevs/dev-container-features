@@ -1,0 +1,33 @@
+{
+    "id": "wireguard",
+    "version": "1.0.0",
+    "name": "WireGuard",
+    "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/wireguard",
+    "description": "Installs WireGuard VPN tools including wg, wg-quick, and optional wireguard-go for userspace implementation.",
+    "options": {
+        "installTools": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install WireGuard tools (wg, wg-quick)"
+        },
+        "installWireguardGo": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install wireguard-go userspace implementation"
+        },
+        "installBoringtun": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install boringtun (Cloudflare's userspace WireGuard implementation)"
+        },
+        "boringtunVersion": {
+            "type": "string",
+            "proposals": ["latest", "0.6.0", "0.5.2"],
+            "default": "latest",
+            "description": "boringtun version (only used if installBoringtun is true)"
+        }
+    },
+    "privileged": true,
+    "capAdd": ["NET_ADMIN", "SYS_MODULE"],
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

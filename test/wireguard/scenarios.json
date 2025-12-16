@@ -1,0 +1,20 @@
+{
+    "with-boringtun": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "wireguard": {
+                "installBoringtun": true
+            }
+        }
+    },
+    "tools-only": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "wireguard": {
+                "installTools": true,
+                "installWireguardGo": false,
+                "installBoringtun": false
+            }
+        }
+    }
+}

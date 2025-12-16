@@ -1,0 +1,58 @@
+{
+    "id": "wss",
+    "version": "1.0.0",
+    "name": "WebSocket and Tunneling Tools",
+    "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/wss",
+    "description": "Installs WebSocket tools (wscat, websocat), wstunnel, Cloudflare Tunnel (cloudflared), and Cloudflare Wrangler CLI.",
+    "options": {
+        "installWscat": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install wscat (WebSocket CLI client via npm)"
+        },
+        "installWebsocat": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install websocat (WebSocket CLI client, Rust-based)"
+        },
+        "websocatVersion": {
+            "type": "string",
+            "proposals": ["latest", "1.13.0", "1.12.0"],
+            "default": "latest",
+            "description": "websocat version"
+        },
+        "installWstunnel": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install wstunnel for tunneling over WebSocket"
+        },
+        "wstunnelVersion": {
+            "type": "string",
+            "proposals": ["latest", "10.1.0", "9.7.0"],
+            "default": "latest",
+            "description": "wstunnel version"
+        },
+        "installCloudflared": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install Cloudflare Tunnel daemon (cloudflared)"
+        },
+        "cloudflaredVersion": {
+            "type": "string",
+            "proposals": ["latest", "2024.12.0", "2024.11.0"],
+            "default": "latest",
+            "description": "cloudflared version"
+        },
+        "installWrangler": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install Cloudflare Wrangler CLI for Workers development"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["nicecrab.crab-wrangler"]
+        }
+    },
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}
