@@ -21,8 +21,187 @@ jobs:
           features=$(ls -1 src/ | jq -R -s -c 'split("\n") | map(select(. != ""))')
           echo "features=${features}" >> $GITHUB_OUTPUT
 
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck jq
+
+      - name: Validate JSON syntax
+        run: |
+          echo "Validating devcontainer-feature.json files..."
+          errors=0
+          for f in src/*/devcontainer-feature.json; do
+            if jq empty "$f" 2>/dev/null; then
+              echo "✓ $f"
+            else
+              echo "✗ $f - Invalid JSON"
+              errors=$((errors + 1))
+            fi
+          done
+          if [ $errors -gt 0 ]; then
+            echo "Found $errors JSON validation errors"
+            exit 1
+          fi
+
+      - name: Validate required files exist
+        run: |
+          echo "Checking required files..."
+          errors=0
+          for feature_dir in src/*/; do
+            feature=$(basename "$feature_dir")
+
+            # Check devcontainer-feature.json
+            if [ ! -f "$feature_dir/devcontainer-feature.json" ]; then
+              echo "✗ $feature: missing devcontainer-feature.json"
+              errors=$((errors + 1))
+            fi
+
+            # Check install.sh
+            if [ ! -f "$feature_dir/install.sh" ]; then
+              echo "✗ $feature: missing install.sh"
+              errors=$((errors + 1))
+            elif [ ! -x "$feature_dir/install.sh" ]; then
+              echo "✗ $feature: install.sh is not executable"
+              errors=$((errors + 1))
+            else
+              echo "✓ $feature: required files present"
+            fi
+
+            # Check test files
+            if [ ! -f "test/$feature/test.sh" ]; then
+              echo "⚠ $feature: missing test/test.sh"
+            fi
+          done
+          if [ $errors -gt 0 ]; then
+            echo "Found $errors missing file errors"
+            exit 1
+          fi
+
+      - name: Validate feature metadata
+        run: |
+          echo "Validating feature metadata..."
+          errors=0
+          for f in src/*/devcontainer-feature.json; do
+            feature=$(dirname "$f" | xargs basename)
+
+            # Check required fields
+            id=$(jq -r '.id // empty' "$f")
+            version=$(jq -r '.version // empty' "$f")
+            name=$(jq -r '.name // empty' "$f")
+
+            if [ -z "$id" ]; then
+              echo "✗ $feature: missing 'id' field"
+              errors=$((errors + 1))
+            elif [ "$id" != "$feature" ]; then
+              echo "✗ $feature: id '$id' doesn't match directory name"
+              errors=$((errors + 1))
+            fi
+
+            if [ -z "$version" ]; then
+              echo "✗ $feature: missing 'version' field"
+              errors=$((errors + 1))
+            fi
+
+            if [ -z "$name" ]; then
+              echo "✗ $feature: missing 'name' field"
+              errors=$((errors + 1))
+            fi
+
+            # Validate options format
+            if jq -e '.options' "$f" > /dev/null 2>&1; then
+              for opt in $(jq -r '.options | keys[]' "$f"); do
+                opt_type=$(jq -r ".options[\"$opt\"].type // empty" "$f")
+                if [ -z "$opt_type" ]; then
+                  echo "✗ $feature: option '$opt' missing type"
+                  errors=$((errors + 1))
+                fi
+              done
+            fi
+
+            if [ $errors -eq 0 ]; then
+              echo "✓ $feature: metadata valid"
+            fi
+          done
+          if [ $errors -gt 0 ]; then
+            echo "Found $errors metadata errors"
+            exit 1
+          fi
+
+      - name: Lint shell scripts with shellcheck
+        run: |
+          echo "Running shellcheck on install scripts..."
+          errors=0
+          for script in src/*/install.sh; do
+            feature=$(dirname "$script" | xargs basename)
+            if shellcheck -S warning "$script"; then
+              echo "✓ $feature/install.sh"
+            else
+              echo "✗ $feature/install.sh has shellcheck warnings"
+              errors=$((errors + 1))
+            fi
+          done
+
+          echo ""
+          echo "Running shellcheck on test scripts..."
+          for script in test/*/test.sh; do
+            feature=$(dirname "$script" | xargs basename)
+            if shellcheck -S warning "$script" 2>/dev/null; then
+              echo "✓ $feature/test.sh"
+            else
+              echo "⚠ $feature/test.sh has shellcheck warnings (non-blocking)"
+            fi
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo "Found $errors shellcheck errors in install scripts"
+            exit 1
+          fi
+
+      - name: Validate install.sh structure
+        run: |
+          echo "Validating install.sh structure..."
+          errors=0
+          for script in src/*/install.sh; do
+            feature=$(dirname "$script" | xargs basename)
+
+            # Check shebang
+            if ! head -1 "$script" | grep -q '^#!/bin/bash\|^#!/usr/bin/env bash'; then
+              echo "✗ $feature: install.sh missing bash shebang"
+              errors=$((errors + 1))
+            fi
+
+            # Check set -e
+            if ! grep -q 'set -e' "$script"; then
+              echo "⚠ $feature: install.sh missing 'set -e'"
+            fi
+
+            # Check for syntax errors
+            if bash -n "$script" 2>/dev/null; then
+              echo "✓ $feature: install.sh syntax valid"
+            else
+              echo "✗ $feature: install.sh has syntax errors"
+              errors=$((errors + 1))
+            fi
+          done
+          if [ $errors -gt 0 ]; then
+            echo "Found $errors structure errors"
+            exit 1
+          fi
+
+      - name: Summary
+        run: |
+          echo ""
+          echo "=== Validation Summary ==="
+          echo "Features found: $(ls -1 src/ | wc -l)"
+          echo "All validations passed!"
+
   test:
-    needs: detect-changes
+    needs: [detect-changes, validate]
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
@@ -50,7 +229,7 @@ jobs:
             --base-image ${{ matrix.base-image }}
 
   test-scenarios:
-    needs: detect-changes
+    needs: [detect-changes, validate]
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
@@ -70,6 +249,29 @@ jobs:
 
       - name: Test scenarios - ${{ matrix.feature }}
         run: |
-          devcontainer features test \
-            --features ${{ matrix.feature }} \
-            --skip-autogenerated
+          if [ -f "test/${{ matrix.feature }}/scenarios.json" ]; then
+            devcontainer features test \
+              --features ${{ matrix.feature }} \
+              --skip-autogenerated
+          else
+            echo "No scenarios.json found, skipping"
+          fi
+
+  results:
+    needs: [validate, test, test-scenarios]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          echo "=== Test Results ==="
+          echo "Validation: ${{ needs.validate.result }}"
+          echo "Feature Tests: ${{ needs.test.result }}"
+          echo "Scenario Tests: ${{ needs.test-scenarios.result }}"
+
+          if [ "${{ needs.validate.result }}" != "success" ]; then
+            echo "Validation failed!"
+            exit 1
+          fi
+
+          echo "All critical checks passed!"
