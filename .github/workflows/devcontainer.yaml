@@ -64,21 +64,21 @@ jobs:
 
       - name: Test firewall can be started
         run: |
-          devcontainer exec --workspace-folder . bash -c "
+          devcontainer exec --workspace-folder . --remote-user root bash -c "
             echo '=== Testing firewall start ==='
-            sudo /usr/local/bin/init-firewall.sh
+            /usr/local/bin/init-firewall.sh
             echo '✓ Firewall started successfully'
 
             echo '=== Firewall status ==='
-            sudo iptables -L -n | head -20
+            iptables -L -n | head -20
 
             echo '=== Allowed IPs (sample) ==='
-            sudo ipset list allowed-domains | head -20
+            ipset list allowed-domains | head -20
           "
 
       - name: Test firewall blocks unauthorized traffic
         run: |
-          devcontainer exec --workspace-folder . bash -c "
+          devcontainer exec --workspace-folder . --remote-user node bash -c "
             echo '=== Testing firewall blocking ==='
 
             # This should fail (blocked)
@@ -102,4 +102,5 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          devcontainer down --workspace-folder . || true
+          # Stop any running containers from this devcontainer
+          docker ps -q --filter "label=devcontainer.local_folder=$PWD" | xargs -r docker stop || true
