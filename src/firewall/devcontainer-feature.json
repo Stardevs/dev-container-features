@@ -1,6 +1,6 @@
 {
     "id": "firewall",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Whitelist Firewall",
     "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/firewall",
     "description": "Configures a whitelist-based firewall using iptables and ipset. Only allows outbound traffic to specified domains/IPs.",
