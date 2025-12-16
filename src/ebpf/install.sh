@@ -55,8 +55,13 @@ apt-get install -y --no-install-recommends \
 # Install kernel headers
 if [ "${INSTALL_KERNEL_HEADERS}" = "true" ]; then
     echo "Installing kernel headers..."
+    # Try Ubuntu-style first, then Debian-style, then kernel-specific
     apt-get install -y --no-install-recommends \
         linux-headers-generic 2>/dev/null || \
+    apt-get install -y --no-install-recommends \
+        linux-headers-amd64 2>/dev/null || \
+    apt-get install -y --no-install-recommends \
+        linux-headers-arm64 2>/dev/null || \
     apt-get install -y --no-install-recommends \
         "linux-headers-$(uname -r)" 2>/dev/null || \
     echo "WARNING: Could not install kernel headers for current kernel. eBPF programs may not compile."
@@ -107,22 +112,28 @@ fi
 # Install bpftool
 if [ "${INSTALL_BPFTOOL}" = "true" ]; then
     echo "Installing bpftool..."
+    # Try standalone bpftool first, then Ubuntu linux-tools, then Debian linux-perf
     apt-get install -y --no-install-recommends \
         bpftool 2>/dev/null || \
     apt-get install -y --no-install-recommends \
         linux-tools-common \
         linux-tools-generic 2>/dev/null || \
+    apt-get install -y --no-install-recommends \
+        linux-perf \
+        linux-base 2>/dev/null || \
     echo "WARNING: bpftool not available in packages"
 fi
 
 # Install perf and performance tools
 if [ "${INSTALL_PERF_TOOLS}" = "true" ]; then
     echo "Installing perf tools..."
+    # Try Ubuntu linux-tools first, then Debian linux-perf
     apt-get install -y --no-install-recommends \
         linux-tools-common \
         linux-tools-generic 2>/dev/null || \
     apt-get install -y --no-install-recommends \
-        linux-perf 2>/dev/null || \
+        linux-perf \
+        linux-base 2>/dev/null || \
     echo "WARNING: perf tools not available"
 
     # Additional tracing tools
