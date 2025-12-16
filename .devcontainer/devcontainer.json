@@ -10,7 +10,7 @@
     }
   },
   "features": {
-    "../src/firewall": {
+    "ghcr.io/stardevs/dev-container-features/firewall:1": {
       "allowGitHub": true,
       "allowNpm": true,
       "allowedDomains": "api.anthropic.com,sentry.io,statsig.anthropic.com,statsig.com,marketplace.visualstudio.com,vscode.blob.core.windows.net,update.code.visualstudio.com",
