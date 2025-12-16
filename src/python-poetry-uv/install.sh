@@ -65,14 +65,30 @@ else
     apt-get install -y --no-install-recommends python3 python3-venv python3-dev
 fi
 
-# Ensure pip is available
-python3 -m ensurepip --upgrade 2>/dev/null || apt-get install -y python3-pip
+# Ensure pip is available - try for both system and target Python
+apt-get install -y --no-install-recommends python3-pip python3-venv 2>/dev/null || true
+python3 -m ensurepip --upgrade 2>/dev/null || true
+
+# If we installed a specific version, ensure pip works for it
+if [ "${PYTHON_VERSION}" != "system" ] && command -v "python${PYTHON_VERSION}" >/dev/null 2>&1; then
+    "python${PYTHON_VERSION}" -m ensurepip --upgrade 2>/dev/null || true
+fi
 
 # Install pipx
 if [ "${INSTALL_PIPX}" = "true" ]; then
     echo "Installing pipx..."
-    python3 -m pip install --break-system-packages pipx 2>/dev/null || python3 -m pip install pipx
-    python3 -m pipx ensurepath
+    # Use the target Python version if available
+    TARGET_PYTHON="python3"
+    if [ "${PYTHON_VERSION}" != "system" ] && command -v "python${PYTHON_VERSION}" >/dev/null 2>&1; then
+        TARGET_PYTHON="python${PYTHON_VERSION}"
+    fi
+
+    ${TARGET_PYTHON} -m pip install --break-system-packages pipx 2>/dev/null || \
+    ${TARGET_PYTHON} -m pip install pipx 2>/dev/null || \
+    python3 -m pip install --break-system-packages pipx 2>/dev/null || \
+    python3 -m pip install pipx
+
+    ${TARGET_PYTHON} -m pipx ensurepath 2>/dev/null || python3 -m pipx ensurepath
 
     # Make pipx available system-wide
     PIPX_BIN="/root/.local/bin"

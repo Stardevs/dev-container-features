@@ -63,6 +63,12 @@ if [ "${INSTALL_WSCAT}" = "true" ]; then
         apt-get install -y --no-install-recommends nodejs npm
         npm install -g wscat
     fi
+
+    # Ensure wscat is in PATH by linking to /usr/local/bin
+    NPM_BIN=$(npm bin -g 2>/dev/null || echo "/usr/local/lib/node_modules/.bin")
+    if [ -f "${NPM_BIN}/wscat" ] && [ ! -f /usr/local/bin/wscat ]; then
+        ln -sf "${NPM_BIN}/wscat" /usr/local/bin/wscat
+    fi
 fi
 
 # Install websocat
@@ -168,6 +174,12 @@ if [ "${INSTALL_WRANGLER}" = "true" ]; then
         apt_get_update_if_needed
         apt-get install -y --no-install-recommends nodejs npm
         npm install -g wrangler
+    fi
+
+    # Ensure wrangler is in PATH by linking to /usr/local/bin
+    NPM_BIN=$(npm bin -g 2>/dev/null || echo "/usr/local/lib/node_modules/.bin")
+    if [ -f "${NPM_BIN}/wrangler" ] && [ ! -f /usr/local/bin/wrangler ]; then
+        ln -sf "${NPM_BIN}/wrangler" /usr/local/bin/wrangler
     fi
 
     # Shell completions

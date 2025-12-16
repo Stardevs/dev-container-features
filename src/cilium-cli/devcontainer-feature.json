@@ -24,7 +24,6 @@
         }
     },
     "installsAfter": [
-        "ghcr.io/devcontainers/features/common-utils",
-        "ghcr.io/Stardevs/devcontainer-features/kubectl-kubectx-kubens"
+        "ghcr.io/devcontainers/features/common-utils"
     ]
 }

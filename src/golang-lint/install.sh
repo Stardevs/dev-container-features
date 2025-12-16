@@ -53,13 +53,21 @@ if [ "${GO_VERSION}" != "none" ]; then
         echo "Resolved latest Go version: ${GO_VERSION}"
     else
         # Handle partial versions like "1.22" -> find latest 1.22.x
-        if [[ ! "${GO_VERSION}" =~ \.[0-9]+\.[0-9]+$ ]]; then
+        # Check if version has exactly 2 parts (major.minor) vs 3 parts (major.minor.patch)
+        DOT_COUNT=$(echo "${GO_VERSION}" | tr -cd '.' | wc -c)
+        if [ "${DOT_COUNT}" -eq 1 ]; then
+            echo "Partial version ${GO_VERSION} detected, resolving to latest patch..."
             # Try to get the latest patch version for this minor
             RESOLVED=$(curl -fsSL "https://go.dev/dl/?mode=json" 2>/dev/null | \
-                grep -o "go${GO_VERSION}\.[0-9]*" | head -1 | sed 's/go//')
+                grep -oE "\"version\":\"go${GO_VERSION}\.[0-9]+\"" | \
+                head -1 | sed -E 's/.*go([0-9.]+).*/\1/')
             if [ -n "${RESOLVED}" ]; then
                 echo "Resolved ${GO_VERSION} to ${RESOLVED}"
                 GO_VERSION="${RESOLVED}"
+            else
+                # Fallback: append .0 if resolution fails
+                echo "Warning: Could not resolve ${GO_VERSION}, trying ${GO_VERSION}.0"
+                GO_VERSION="${GO_VERSION}.0"
             fi
         fi
     fi
