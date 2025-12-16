@@ -33,6 +33,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Make packages public
+        run: |
+          for feature in $(ls src/); do
+            echo "Setting ${feature} to public..."
+            gh api --method PATCH \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/orgs/${{ github.repository_owner }}/packages/container/$(echo ${{ github.event.repository.name }}%2F${feature} | tr '[:upper:]' '[:lower:]')/visibility" \
+              -f visibility=public 2>/dev/null || echo "Could not update ${feature} visibility"
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Commit Documentation
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
