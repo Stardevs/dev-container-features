@@ -62,6 +62,152 @@ jobs:
             echo '=== All checks passed ==='
           "
 
+      - name: Verify all feature tools are installed
+        run: |
+          devcontainer exec --workspace-folder . bash -c "
+            echo '=== Verifying all feature tools ==='
+            FAILED=0
+
+            # golang-lint
+            if golangci-lint --version 2>/dev/null; then
+              echo '✓ golangci-lint installed'
+            else
+              echo '✗ golangci-lint NOT found'
+              FAILED=1
+            fi
+
+            # terraform
+            if terraform --version 2>/dev/null; then
+              echo '✓ terraform installed'
+            else
+              echo '✗ terraform NOT found'
+              FAILED=1
+            fi
+
+            # helm
+            if helm version --short 2>/dev/null; then
+              echo '✓ helm installed'
+            else
+              echo '✗ helm NOT found'
+              FAILED=1
+            fi
+
+            # kubectl
+            if kubectl version --client 2>/dev/null; then
+              echo '✓ kubectl installed'
+            else
+              echo '✗ kubectl NOT found'
+              FAILED=1
+            fi
+
+            # kubectx/kubens
+            if which kubectx && which kubens 2>/dev/null; then
+              echo '✓ kubectx/kubens installed'
+            else
+              echo '✗ kubectx/kubens NOT found'
+              FAILED=1
+            fi
+
+            # aws-cli
+            if aws --version 2>/dev/null; then
+              echo '✓ aws-cli installed'
+            else
+              echo '✗ aws-cli NOT found'
+              FAILED=1
+            fi
+
+            # gcloud-cli
+            if gcloud --version 2>/dev/null | head -1; then
+              echo '✓ gcloud-cli installed'
+            else
+              echo '✗ gcloud-cli NOT found'
+              FAILED=1
+            fi
+
+            # python-poetry-uv
+            if poetry --version 2>/dev/null && uv --version 2>/dev/null; then
+              echo '✓ poetry and uv installed'
+            else
+              echo '✗ poetry or uv NOT found'
+              FAILED=1
+            fi
+
+            # redis-cli
+            if redis-cli --version 2>/dev/null; then
+              echo '✓ redis-cli installed'
+            else
+              echo '✗ redis-cli NOT found'
+              FAILED=1
+            fi
+
+            # psql
+            if psql --version 2>/dev/null; then
+              echo '✓ psql installed'
+            else
+              echo '✗ psql NOT found'
+              FAILED=1
+            fi
+
+            # argo-cli
+            if argo version --client 2>/dev/null; then
+              echo '✓ argo-cli installed'
+            else
+              echo '✗ argo-cli NOT found'
+              FAILED=1
+            fi
+
+            # cilium-cli
+            if cilium version --client 2>/dev/null; then
+              echo '✓ cilium-cli installed'
+            else
+              echo '✗ cilium-cli NOT found'
+              FAILED=1
+            fi
+
+            # istio-cli
+            if istioctl version --remote=false 2>/dev/null; then
+              echo '✓ istioctl installed'
+            else
+              echo '✗ istioctl NOT found'
+              FAILED=1
+            fi
+
+            # wireguard
+            if wg --version 2>/dev/null || which wg 2>/dev/null; then
+              echo '✓ wireguard installed'
+            else
+              echo '✗ wireguard NOT found'
+              FAILED=1
+            fi
+
+            # ebpf (bpftool)
+            if bpftool version 2>/dev/null; then
+              echo '✓ bpftool installed'
+            else
+              echo '✗ bpftool NOT found'
+              FAILED=1
+            fi
+
+            # proxy-dpi (mitmproxy)
+            if mitmproxy --version 2>/dev/null; then
+              echo '✓ mitmproxy installed'
+            else
+              echo '✗ mitmproxy NOT found'
+              FAILED=1
+            fi
+
+            # wss (websocat)
+            if websocat --version 2>/dev/null; then
+              echo '✓ websocat installed'
+            else
+              echo '✗ websocat NOT found'
+              FAILED=1
+            fi
+
+            echo '=== Tool verification complete ==='
+            exit \$FAILED
+          "
+
       - name: Get container ID
         id: container
         run: |
