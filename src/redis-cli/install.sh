@@ -61,6 +61,17 @@ if [ "${INSTALL_SERVER}" = "true" ]; then
     update-rc.d redis-server disable 2>/dev/null || true
 fi
 
+# Setup bash completion for redis-cli
+mkdir -p /etc/bash_completion.d
+cat > /etc/bash_completion.d/redis-cli <<'EOF'
+_redis_cli() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local commands="get set del keys ping info config client cluster debug"
+    COMPREPLY=($(compgen -W "${commands}" -- "${cur}"))
+}
+complete -F _redis_cli redis-cli
+EOF
+
 # Cleanup
 apt-get clean
 rm -rf /var/lib/apt/lists/*

@@ -82,6 +82,40 @@ if [ "${INSTALL_PGCLI}" = "true" ]; then
     fi
 fi
 
+# Setup bash completion for psql
+mkdir -p /etc/bash_completion.d
+if [ -f /usr/share/bash-completion/completions/psql ]; then
+    ln -sf /usr/share/bash-completion/completions/psql /etc/bash_completion.d/psql
+else
+    # Create basic completion if not provided by package
+    cat > /etc/bash_completion.d/psql <<'EOF'
+_psql() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    case "${prev}" in
+        -h|--host)
+            COMPREPLY=($(compgen -A hostname -- "${cur}"))
+            return 0
+            ;;
+        -d|--dbname|-U|--username)
+            return 0
+            ;;
+        -f|--file|-o|--output|-L|--log-file)
+            COMPREPLY=($(compgen -f -- "${cur}"))
+            return 0
+            ;;
+    esac
+
+    if [[ "${cur}" == -* ]]; then
+        local opts="-h --host -p --port -U --username -d --dbname -c --command -f --file -l --list -v --variable -X --no-psqlrc -a --echo-all -b --echo-errors -e --echo-queries -E --echo-hidden -q --quiet -s --single-step -S --single-line"
+        COMPREPLY=($(compgen -W "${opts}" -- "${cur}"))
+    fi
+}
+complete -F _psql psql
+EOF
+fi
+
 # Cleanup
 apt-get clean
 rm -rf /var/lib/apt/lists/*
