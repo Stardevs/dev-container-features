@@ -38,19 +38,29 @@ apt-get install -y --no-install-recommends \
 if [ "${PYTHON_VERSION}" != "system" ]; then
     echo "Installing Python ${PYTHON_VERSION}..."
 
-    # Add deadsnakes PPA for specific Python versions
-    add-apt-repository -y ppa:deadsnakes/ppa
-    apt-get update
+    # Check if we're on Ubuntu (deadsnakes PPA only works on Ubuntu)
+    if grep -q "ubuntu" /etc/os-release 2>/dev/null; then
+        # Add deadsnakes PPA for specific Python versions
+        add-apt-repository -y ppa:deadsnakes/ppa
+        apt-get update
 
-    apt-get install -y --no-install-recommends \
-        "python${PYTHON_VERSION}" \
-        "python${PYTHON_VERSION}-venv" \
-        "python${PYTHON_VERSION}-dev" \
-        "python${PYTHON_VERSION}-distutils" 2>/dev/null || true
+        apt-get install -y --no-install-recommends \
+            "python${PYTHON_VERSION}" \
+            "python${PYTHON_VERSION}-venv" \
+            "python${PYTHON_VERSION}-dev" \
+            "python${PYTHON_VERSION}-distutils" 2>/dev/null || true
 
-    # Set as default python3
-    update-alternatives --install /usr/bin/python3 python3 "/usr/bin/python${PYTHON_VERSION}" 1
-    update-alternatives --install /usr/bin/python python "/usr/bin/python${PYTHON_VERSION}" 1
+        # Set as default python3
+        update-alternatives --install /usr/bin/python3 python3 "/usr/bin/python${PYTHON_VERSION}" 1 2>/dev/null || true
+        update-alternatives --install /usr/bin/python python "/usr/bin/python${PYTHON_VERSION}" 1 2>/dev/null || true
+    else
+        # On Debian, try to install the requested version or fall back to system
+        apt-get install -y --no-install-recommends \
+            "python${PYTHON_VERSION}" \
+            "python${PYTHON_VERSION}-venv" \
+            "python${PYTHON_VERSION}-dev" 2>/dev/null || \
+        apt-get install -y --no-install-recommends python3 python3-venv python3-dev
+    fi
 else
     apt-get install -y --no-install-recommends python3 python3-venv python3-dev
 fi

@@ -117,13 +117,16 @@ if [ "${INSTALL_HELMFILE}" = "true" ]; then
     fi
     HELMFILE_VERSION="${HELMFILE_VERSION#v}"
 
-    curl -fsSL -o /usr/local/bin/helmfile \
-        "https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_linux_${ARCHITECTURE}.tar.gz" \
-        && tar -xzf /usr/local/bin/helmfile -C /usr/local/bin helmfile \
-        || curl -fsSL -o /usr/local/bin/helmfile \
-            "https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_linux_${ARCHITECTURE}"
+    TEMP_DIR=$(mktemp -d)
+    cd "${TEMP_DIR}"
 
-    chmod +x /usr/local/bin/helmfile
+    curl -fsSL -o helmfile.tar.gz \
+        "https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_linux_${ARCHITECTURE}.tar.gz"
+    tar -xzf helmfile.tar.gz
+    install -m 755 helmfile /usr/local/bin/helmfile
+
+    cd /
+    rm -rf "${TEMP_DIR}"
 fi
 
 # Cleanup

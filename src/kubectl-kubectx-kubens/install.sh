@@ -87,15 +87,21 @@ KUBECTX_VERSION="${KUBECTX_VERSION#v}"
 TEMP_DIR=$(mktemp -d)
 cd "${TEMP_DIR}"
 
+# Map architecture for kubectx (uses x86_64 not amd64)
+KUBECTX_ARCH="${ARCHITECTURE}"
+if [ "${ARCHITECTURE}" = "amd64" ]; then
+    KUBECTX_ARCH="x86_64"
+fi
+
 # Download kubectx
 curl -fsSL -o kubectx.tar.gz \
-    "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubectx_v${KUBECTX_VERSION}_linux_${ARCHITECTURE}.tar.gz"
+    "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubectx_v${KUBECTX_VERSION}_linux_${KUBECTX_ARCH}.tar.gz"
 tar -xzf kubectx.tar.gz
 install -m 755 kubectx /usr/local/bin/kubectx
 
 # Download kubens
 curl -fsSL -o kubens.tar.gz \
-    "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubens_v${KUBECTX_VERSION}_linux_${ARCHITECTURE}.tar.gz"
+    "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubens_v${KUBECTX_VERSION}_linux_${KUBECTX_ARCH}.tar.gz"
 tar -xzf kubens.tar.gz
 install -m 755 kubens /usr/local/bin/kubens
 
