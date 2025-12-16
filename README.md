@@ -18,6 +18,8 @@ A collection of devcontainer features for cloud-native development tools.
 | [cilium-cli](src/cilium-cli) | Cilium CLI with optional Hubble |
 | [wireguard](src/wireguard) | WireGuard VPN tools with optional boringtun |
 | [wss](src/wss) | WebSocket tools, wstunnel, Cloudflare Tunnel, and Wrangler |
+| [redis-cli](src/redis-cli) | Redis CLI tools with optional redis-server |
+| [psql](src/psql) | PostgreSQL client (psql, pg_dump) with optional server and pgcli |
 
 ## Usage
 

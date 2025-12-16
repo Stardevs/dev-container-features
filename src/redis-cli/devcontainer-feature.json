@@ -1,0 +1,31 @@
+{
+    "id": "redis-cli",
+    "version": "1.0.0",
+    "name": "Redis CLI",
+    "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/redis-cli",
+    "description": "Installs Redis CLI tools including redis-cli, and optionally redis-server for local development.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": ["latest", "7.4", "7.2", "7.0", "6.2"],
+            "default": "latest",
+            "description": "Redis version to install"
+        },
+        "installServer": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install redis-server for local development"
+        },
+        "installRedisTools": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install additional Redis tools (redis-benchmark, redis-check-aof, redis-check-rdb)"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["cweijan.vscode-redis-client"]
+        }
+    },
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

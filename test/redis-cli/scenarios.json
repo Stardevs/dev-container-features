@@ -1,0 +1,18 @@
+{
+    "with-server": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "redis-cli": {
+                "installServer": true
+            }
+        }
+    },
+    "specific-version": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "redis-cli": {
+                "version": "7.2"
+            }
+        }
+    }
+}

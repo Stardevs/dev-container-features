@@ -1,0 +1,36 @@
+{
+    "id": "psql",
+    "version": "1.0.0",
+    "name": "PostgreSQL Client (psql)",
+    "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/psql",
+    "description": "Installs PostgreSQL client tools including psql, pg_dump, pg_restore, and optionally PostgreSQL server.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": ["latest", "17", "16", "15", "14", "13"],
+            "default": "latest",
+            "description": "PostgreSQL version to install"
+        },
+        "installServer": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install PostgreSQL server for local development"
+        },
+        "installContrib": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install postgresql-contrib with additional utilities"
+        },
+        "installPgcli": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install pgcli (enhanced PostgreSQL CLI with auto-completion)"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["ckolkman.vscode-postgres"]
+        }
+    },
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

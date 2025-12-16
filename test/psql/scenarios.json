@@ -1,0 +1,26 @@
+{
+    "with-server": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "psql": {
+                "installServer": true
+            }
+        }
+    },
+    "with-pgcli": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "psql": {
+                "installPgcli": true
+            }
+        }
+    },
+    "specific-version": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "psql": {
+                "version": "16"
+            }
+        }
+    }
+}
