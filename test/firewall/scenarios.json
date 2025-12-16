@@ -1,0 +1,28 @@
+{
+    "github-npm": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "firewall": {
+                "allowGitHub": true,
+                "allowNpm": true
+            }
+        }
+    },
+    "python-dev": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "firewall": {
+                "allowGitHub": true,
+                "allowPypi": true
+            }
+        }
+    },
+    "custom-domains": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "firewall": {
+                "allowedDomains": "api.anthropic.com,sentry.io"
+            }
+        }
+    }
+}

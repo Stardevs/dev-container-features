@@ -1,0 +1,57 @@
+{
+    "id": "firewall",
+    "version": "1.0.0",
+    "name": "Whitelist Firewall",
+    "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/firewall",
+    "description": "Configures a whitelist-based firewall using iptables and ipset. Only allows outbound traffic to specified domains/IPs.",
+    "options": {
+        "allowedDomains": {
+            "type": "string",
+            "default": "",
+            "description": "Comma-separated list of domains to allow (e.g., 'api.github.com,registry.npmjs.org')"
+        },
+        "allowGitHub": {
+            "type": "boolean",
+            "default": true,
+            "description": "Allow all GitHub IP ranges (fetched from api.github.com/meta)"
+        },
+        "allowNpm": {
+            "type": "boolean",
+            "default": true,
+            "description": "Allow registry.npmjs.org"
+        },
+        "allowPypi": {
+            "type": "boolean",
+            "default": false,
+            "description": "Allow pypi.org and files.pythonhosted.org"
+        },
+        "allowDocker": {
+            "type": "boolean",
+            "default": false,
+            "description": "Allow Docker Hub and related registries"
+        },
+        "allowGoogle": {
+            "type": "boolean",
+            "default": false,
+            "description": "Allow Google Cloud APIs"
+        },
+        "allowAws": {
+            "type": "boolean",
+            "default": false,
+            "description": "Allow AWS APIs"
+        },
+        "enableOnStart": {
+            "type": "boolean",
+            "default": false,
+            "description": "Automatically enable firewall on container start (requires postStartCommand)"
+        },
+        "blockVerificationDomain": {
+            "type": "string",
+            "default": "example.com",
+            "description": "Domain to verify firewall is blocking (should fail to connect)"
+        }
+    },
+    "privileged": true,
+    "capAdd": ["NET_ADMIN"],
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

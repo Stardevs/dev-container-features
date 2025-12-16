@@ -20,6 +20,7 @@ A collection of devcontainer features for cloud-native development tools.
 | [wss](src/wss) | WebSocket tools, wstunnel, Cloudflare Tunnel, and Wrangler |
 | [redis-cli](src/redis-cli) | Redis CLI tools with optional redis-server |
 | [psql](src/psql) | PostgreSQL client (psql, pg_dump) with optional server and pgcli |
+| [firewall](src/firewall) | Whitelist-based firewall using iptables and ipset |
 
 ## Usage
 
