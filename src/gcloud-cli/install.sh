@@ -70,6 +70,19 @@ if [ -n "${INSTALL_COMPONENTS}" ]; then
     done
 fi
 
+# Setup shell completions
+mkdir -p /etc/bash_completion.d
+if [ -f /usr/share/google-cloud-sdk/completion.bash.inc ]; then
+    ln -sf /usr/share/google-cloud-sdk/completion.bash.inc /etc/bash_completion.d/gcloud
+fi
+
+if command -v zsh >/dev/null 2>&1; then
+    mkdir -p /usr/local/share/zsh/site-functions
+    if [ -f /usr/share/google-cloud-sdk/completion.zsh.inc ]; then
+        ln -sf /usr/share/google-cloud-sdk/completion.zsh.inc /usr/local/share/zsh/site-functions/_gcloud
+    fi
+fi
+
 # Cleanup
 apt-get clean
 rm -rf /var/lib/apt/lists/*
