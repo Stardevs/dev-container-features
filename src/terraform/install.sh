@@ -85,14 +85,23 @@ if [ "${TFLINT_VERSION}" != "none" ]; then
 
     if [ "${TFLINT_VERSION}" = "latest" ]; then
         TFLINT_VERSION=$(resolve_github_version "terraform-linters/tflint")
+        # Fallback if API fails
+        if [ -z "${TFLINT_VERSION}" ]; then
+            echo "Warning: Could not resolve TFLint version from API, using installer script..."
+            curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+        fi
     fi
-    TFLINT_VERSION="${TFLINT_VERSION#v}"
 
-    curl -fsSL -o /tmp/tflint.zip \
-        "https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_linux_${ARCHITECTURE}.zip"
-    unzip -o /tmp/tflint.zip -d /usr/local/bin
-    chmod +x /usr/local/bin/tflint
-    rm /tmp/tflint.zip
+    # Only download directly if we have a version
+    if [ -n "${TFLINT_VERSION}" ]; then
+        TFLINT_VERSION="${TFLINT_VERSION#v}"
+        echo "Downloading TFLint v${TFLINT_VERSION}..."
+        curl -fsSL -o /tmp/tflint.zip \
+            "https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_linux_${ARCHITECTURE}.zip"
+        unzip -o /tmp/tflint.zip -d /usr/local/bin
+        chmod +x /usr/local/bin/tflint
+        rm /tmp/tflint.zip
+    fi
 fi
 
 # Install Terragrunt

@@ -53,8 +53,12 @@ if [ "${INSTALL_TOOLS}" = "true" ]; then
     apt-get install -y --no-install-recommends \
         wireguard-tools \
         iptables \
-        iproute2 \
-        openresolv 2>/dev/null || apt-get install -y --no-install-recommends resolvconf 2>/dev/null || true
+        iproute2
+
+    # Try to install openresolv or resolvconf (optional, for wg-quick)
+    apt-get install -y --no-install-recommends openresolv 2>/dev/null || \
+        apt-get install -y --no-install-recommends resolvconf 2>/dev/null || \
+        echo "Note: Neither openresolv nor resolvconf available. wg-quick DNS management may not work."
 fi
 
 # Install wireguard-go (userspace implementation)

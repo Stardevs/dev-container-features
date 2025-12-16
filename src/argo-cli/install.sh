@@ -51,16 +51,29 @@ if [ "${ARGO_WORKFLOWS_VERSION}" != "none" ]; then
 
     if [ "${ARGO_WORKFLOWS_VERSION}" = "latest" ]; then
         ARGO_WORKFLOWS_VERSION=$(resolve_github_version "argoproj/argo-workflows")
+        if [ -z "${ARGO_WORKFLOWS_VERSION}" ]; then
+            echo "Warning: Could not resolve Argo Workflows version, skipping..."
+            ARGO_WORKFLOWS_VERSION="none"
+        fi
     fi
-    ARGO_WORKFLOWS_VERSION="${ARGO_WORKFLOWS_VERSION#v}"
 
-    curl -fsSL -o /usr/local/bin/argo \
-        "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_WORKFLOWS_VERSION}/argo-linux-${ARCHITECTURE}.gz" \
-        && gunzip -f /usr/local/bin/argo \
-        || curl -fsSL -o /usr/local/bin/argo \
-            "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_WORKFLOWS_VERSION}/argo-linux-${ARCHITECTURE}"
+    if [ "${ARGO_WORKFLOWS_VERSION}" != "none" ]; then
+        ARGO_WORKFLOWS_VERSION="${ARGO_WORKFLOWS_VERSION#v}"
+        echo "Downloading Argo Workflows v${ARGO_WORKFLOWS_VERSION}..."
 
-    chmod +x /usr/local/bin/argo
+        # Download .gz file to temp and extract
+        if curl -fsSL -o /tmp/argo.gz \
+            "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_WORKFLOWS_VERSION}/argo-linux-${ARCHITECTURE}.gz" 2>/dev/null; then
+            gunzip -c /tmp/argo.gz > /usr/local/bin/argo
+            rm /tmp/argo.gz
+        else
+            # Try direct binary download
+            curl -fsSL -o /usr/local/bin/argo \
+                "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_WORKFLOWS_VERSION}/argo-linux-${ARCHITECTURE}"
+        fi
+
+        chmod +x /usr/local/bin/argo
+    fi
 
     # Shell completions
     mkdir -p /etc/bash_completion.d
