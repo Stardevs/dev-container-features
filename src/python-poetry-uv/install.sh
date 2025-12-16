@@ -101,17 +101,20 @@ fi
 if [ "${POETRY_VERSION}" != "none" ]; then
     echo "Installing Poetry..."
 
+    # Install to system-wide location so all users can access it
+    export POETRY_HOME="/opt/poetry"
+    mkdir -p "${POETRY_HOME}"
+
     if [ "${POETRY_VERSION}" = "latest" ]; then
         curl -sSL https://install.python-poetry.org | python3 -
     else
         curl -sSL https://install.python-poetry.org | python3 - --version "${POETRY_VERSION}"
     fi
 
-    # Make poetry available system-wide
-    if [ -f "/root/.local/bin/poetry" ]; then
-        cp /root/.local/bin/poetry /usr/local/bin/poetry
-        chmod +x /usr/local/bin/poetry
-    fi
+    # Make poetry available system-wide via symlink
+    ln -sf "${POETRY_HOME}/bin/poetry" /usr/local/bin/poetry
+    chmod +x "${POETRY_HOME}/bin/poetry"
+    chmod -R a+rX "${POETRY_HOME}"
 
     # Setup completions
     mkdir -p /etc/bash_completion.d
