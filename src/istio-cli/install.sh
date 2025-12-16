@@ -50,6 +50,11 @@ apt-get install -y --no-install-recommends \
 echo "Installing Istio CLI..."
 if [ "${VERSION}" = "latest" ]; then
     VERSION=$(resolve_github_version "istio/istio")
+    if [ -z "${VERSION}" ]; then
+        echo "Warning: Could not resolve latest Istio version, using fallback..."
+        # Fallback to a known stable version
+        VERSION="1.24.2"
+    fi
 fi
 VERSION="${VERSION#v}"
 
