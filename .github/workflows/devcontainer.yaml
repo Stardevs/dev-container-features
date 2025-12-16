@@ -148,11 +148,11 @@ jobs:
               FAILED=1
             fi
 
-            # argo-cli
-            if argo version --client 2>/dev/null; then
-              echo '✓ argo-cli installed'
+            # argo-cli (argocd is default, argo workflows is optional)
+            if argocd version --client 2>/dev/null; then
+              echo '✓ argocd installed'
             else
-              echo '✗ argo-cli NOT found'
+              echo '✗ argocd NOT found'
               FAILED=1
             fi
 
