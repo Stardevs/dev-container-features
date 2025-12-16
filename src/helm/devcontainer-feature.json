@@ -1,6 +1,6 @@
 {
     "id": "helm",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Helm",
     "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/helm",
     "description": "Installs Helm, the package manager for Kubernetes, with optional plugins.",
