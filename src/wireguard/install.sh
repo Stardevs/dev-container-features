@@ -34,8 +34,10 @@ apt_get_update_if_needed() {
 
 resolve_github_version() {
     local repo="$1"
-    curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" | \
-        grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/'
+    local response
+    response=$(curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" 2>/dev/null) || return 1
+    # Extract tag_name value more reliably
+    echo "$response" | grep -o '"tag_name"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*"tag_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/'
 }
 
 export DEBIAN_FRONTEND=noninteractive
