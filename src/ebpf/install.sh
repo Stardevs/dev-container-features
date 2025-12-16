@@ -25,8 +25,6 @@ detect_arch() {
     esac
 }
 
-ARCHITECTURE=$(detect_arch)
-
 # Helper functions
 apt_get_update_if_needed() {
     if [ ! -d "/var/lib/apt/lists" ] || [ "$(ls /var/lib/apt/lists/ 2>/dev/null | wc -l)" = "0" ]; then
@@ -60,7 +58,7 @@ if [ "${INSTALL_KERNEL_HEADERS}" = "true" ]; then
     apt-get install -y --no-install-recommends \
         linux-headers-generic 2>/dev/null || \
     apt-get install -y --no-install-recommends \
-        linux-headers-$(uname -r) 2>/dev/null || \
+        "linux-headers-$(uname -r)" 2>/dev/null || \
     echo "WARNING: Could not install kernel headers for current kernel. eBPF programs may not compile."
 fi
 

@@ -3,7 +3,6 @@ set -e
 
 VERSION="${VERSION:-"latest"}"
 INSTALL_SERVER="${INSTALLSERVER:-"false"}"
-INSTALL_REDIS_TOOLS="${INSTALLREDISTOOLS:-"true"}"
 
 # Ensure running as root
 if [ "$(id -u)" -ne 0 ]; then
