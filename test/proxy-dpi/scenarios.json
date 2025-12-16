@@ -1,0 +1,36 @@
+{
+    "full-suite": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "proxy-dpi": {
+                "installMitmproxy": true,
+                "installTshark": true,
+                "installSquid": true,
+                "installSslsplit": true
+            }
+        }
+    },
+    "mitmproxy-only": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "proxy-dpi": {
+                "installMitmproxy": true,
+                "installTshark": false,
+                "installSquid": false,
+                "installNgrep": false,
+                "installTcpdump": false
+            }
+        }
+    },
+    "packet-capture": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "proxy-dpi": {
+                "installMitmproxy": false,
+                "installTshark": true,
+                "installTcpdump": true,
+                "installNgrep": true
+            }
+        }
+    }
+}

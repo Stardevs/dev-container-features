@@ -1,0 +1,48 @@
+{
+    "id": "proxy-dpi",
+    "version": "1.0.0",
+    "name": "Proxy and Deep Packet Inspection Tools",
+    "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/proxy-dpi",
+    "description": "Installs proxy and deep packet inspection tools including mitmproxy, Wireshark/tshark, and squid transparent proxy.",
+    "options": {
+        "installMitmproxy": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install mitmproxy for HTTP/HTTPS interception and debugging"
+        },
+        "mitmproxyVersion": {
+            "type": "string",
+            "proposals": ["latest", "10.4.0", "10.3.0", "10.2.0"],
+            "default": "latest",
+            "description": "mitmproxy version"
+        },
+        "installTshark": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install tshark (Wireshark CLI) for packet capture and analysis"
+        },
+        "installSquid": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install Squid transparent proxy"
+        },
+        "installNgrep": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install ngrep for network grep"
+        },
+        "installTcpdump": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install tcpdump for packet capture"
+        },
+        "installSslsplit": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install SSLsplit for SSL/TLS interception"
+        }
+    },
+    "privileged": true,
+    "capAdd": ["NET_ADMIN", "NET_RAW"],
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

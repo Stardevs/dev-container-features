@@ -1,0 +1,43 @@
+{
+    "id": "ebpf",
+    "version": "1.0.0",
+    "name": "eBPF Development Tools",
+    "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/ebpf",
+    "description": "Installs eBPF development and tracing tools including BCC, bpftrace, libbpf, and common utilities.",
+    "options": {
+        "installBcc": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install BCC (BPF Compiler Collection) tools"
+        },
+        "installBpftrace": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install bpftrace high-level tracing language"
+        },
+        "installLibbpf": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install libbpf library and development headers"
+        },
+        "installBpfTool": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install bpftool for eBPF program inspection"
+        },
+        "installPerfTools": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install perf and related performance tools"
+        },
+        "installKernelHeaders": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install kernel headers (required for eBPF compilation)"
+        }
+    },
+    "privileged": true,
+    "capAdd": ["SYS_ADMIN", "SYS_PTRACE", "NET_ADMIN", "BPF", "PERFMON"],
+    "securityOpt": ["seccomp=unconfined"],
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

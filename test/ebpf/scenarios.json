@@ -1,0 +1,24 @@
+{
+    "full-suite": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "ebpf": {
+                "installBcc": true,
+                "installBpftrace": true,
+                "installLibbpf": true,
+                "installBpfTool": true,
+                "installPerfTools": true
+            }
+        }
+    },
+    "minimal": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "ebpf": {
+                "installBcc": false,
+                "installBpftrace": true,
+                "installPerfTools": false
+            }
+        }
+    }
+}

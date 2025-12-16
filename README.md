@@ -21,6 +21,8 @@ A collection of devcontainer features for cloud-native development tools.
 | [redis-cli](src/redis-cli) | Redis CLI tools with optional redis-server |
 | [psql](src/psql) | PostgreSQL client (psql, pg_dump) with optional server and pgcli |
 | [firewall](src/firewall) | Whitelist-based firewall using iptables and ipset |
+| [ebpf](src/ebpf) | eBPF development tools (BCC, bpftrace, libbpf, bpftool) |
+| [proxy-dpi](src/proxy-dpi) | Proxy and deep packet inspection tools (mitmproxy, tshark, Squid) |
 
 ## Usage
 
