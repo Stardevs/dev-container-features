@@ -36,6 +36,7 @@ apt_get_update_if_needed
 apt-get install -y --no-install-recommends \
     iptables \
     ipset \
+    iproute2 \
     dnsutils \
     curl \
     jq \
