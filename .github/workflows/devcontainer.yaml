@@ -62,10 +62,18 @@ jobs:
             echo '=== All checks passed ==='
           "
 
+      - name: Get container ID
+        id: container
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter "label=devcontainer.local_folder=$PWD")
+          echo "id=$CONTAINER_ID" >> $GITHUB_OUTPUT
+
       - name: Test firewall can be started
         run: |
-          devcontainer exec --workspace-folder . --remote-user root bash -c "
+          docker exec -u root ${{ steps.container.outputs.id }} bash -c "
             echo '=== Testing firewall start ==='
+            source /etc/firewall.conf
+            export FIREWALL_ALLOWED_DOMAINS FIREWALL_ALLOW_GITHUB FIREWALL_BLOCK_VERIFICATION_DOMAIN
             /usr/local/bin/init-firewall.sh
             echo '✓ Firewall started successfully'
 
@@ -78,7 +86,7 @@ jobs:
 
       - name: Test firewall blocks unauthorized traffic
         run: |
-          devcontainer exec --workspace-folder . --remote-user node bash -c "
+          docker exec -u node ${{ steps.container.outputs.id }} bash -c "
             echo '=== Testing firewall blocking ==='
 
             # This should fail (blocked)
