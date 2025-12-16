@@ -1,0 +1,24 @@
+{
+    "id": "istio-cli",
+    "version": "1.0.0",
+    "name": "Istio CLI (istioctl)",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/istio-cli",
+    "description": "Installs istioctl, the command-line tool for Istio service mesh management.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": ["latest", "1.24.0", "1.23.0", "1.22.0"],
+            "default": "latest",
+            "description": "Istio version to install"
+        },
+        "enableAutoCompletion": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable bash/zsh auto-completion for istioctl"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/Stardevs/devcontainer-features/kubectl-kubectx-kubens"
+    ]
+}

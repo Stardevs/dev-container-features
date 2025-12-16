@@ -1,0 +1,34 @@
+{
+    "id": "gcloud-cli",
+    "version": "1.0.0",
+    "name": "Google Cloud CLI",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/gcloud-cli",
+    "description": "Installs the Google Cloud CLI (gcloud) with optional components.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": ["latest", "504.0.0", "503.0.0", "502.0.0"],
+            "default": "latest",
+            "description": "Google Cloud CLI version to install"
+        },
+        "installComponents": {
+            "type": "string",
+            "default": "",
+            "description": "Comma-separated list of additional gcloud components to install (e.g., 'gke-gcloud-auth-plugin,cloud-sql-proxy')"
+        },
+        "installGkeAuthPlugin": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install gke-gcloud-auth-plugin for GKE authentication"
+        }
+    },
+    "containerEnv": {
+        "USE_GKE_GCLOUD_AUTH_PLUGIN": "True"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["GoogleCloudTools.cloudcode"]
+        }
+    },
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

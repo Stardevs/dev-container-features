@@ -1,0 +1,28 @@
+{
+    "with-terragrunt": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "terraform": {
+                "terragruntVersion": "latest"
+            }
+        }
+    },
+    "full-toolchain": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "terraform": {
+                "terragruntVersion": "latest",
+                "installTerraformDocs": true,
+                "installTfsec": true
+            }
+        }
+    },
+    "with-opentofu": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "terraform": {
+                "installOpenTofu": true
+            }
+        }
+    }
+}

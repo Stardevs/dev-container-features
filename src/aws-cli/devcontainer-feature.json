@@ -1,0 +1,37 @@
+{
+    "id": "aws-cli",
+    "version": "1.0.0",
+    "name": "AWS CLI",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/aws-cli",
+    "description": "Installs AWS CLI v2 with optional Session Manager plugin and SAM CLI.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": ["latest", "2.22.0", "2.21.0", "2.20.0"],
+            "default": "latest",
+            "description": "AWS CLI version to install"
+        },
+        "installSessionManager": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install AWS Session Manager plugin"
+        },
+        "installSamCli": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install AWS SAM CLI for serverless development"
+        },
+        "samCliVersion": {
+            "type": "string",
+            "proposals": ["latest", "1.131.0", "1.130.0"],
+            "default": "latest",
+            "description": "AWS SAM CLI version (only used if installSamCli is true)"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["AmazonWebServices.aws-toolkit-vscode"]
+        }
+    },
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

@@ -1,0 +1,63 @@
+{
+    "id": "terraform",
+    "version": "1.0.0",
+    "name": "Terraform with TFLint and Terragrunt",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/terraform",
+    "description": "Installs Terraform CLI with optional TFLint, Terragrunt, terraform-docs, and tfsec.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": ["latest", "1.10.0", "1.9.0", "1.8.0"],
+            "default": "latest",
+            "description": "Terraform version to install"
+        },
+        "tflintVersion": {
+            "type": "string",
+            "proposals": ["latest", "0.54.0", "0.53.0", "none"],
+            "default": "latest",
+            "description": "TFLint version to install ('none' to skip)"
+        },
+        "terragruntVersion": {
+            "type": "string",
+            "proposals": ["latest", "0.69.0", "0.68.0", "none"],
+            "default": "none",
+            "description": "Terragrunt version to install ('none' to skip)"
+        },
+        "installTerraformDocs": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install terraform-docs for documentation generation"
+        },
+        "terraformDocsVersion": {
+            "type": "string",
+            "proposals": ["latest", "0.19.0", "0.18.0"],
+            "default": "latest",
+            "description": "terraform-docs version"
+        },
+        "installTfsec": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install tfsec for security scanning"
+        },
+        "installOpenTofu": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install OpenTofu as an alternative to Terraform"
+        },
+        "openTofuVersion": {
+            "type": "string",
+            "proposals": ["latest", "1.9.0", "1.8.0"],
+            "default": "latest",
+            "description": "OpenTofu version (only used if installOpenTofu is true)"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["HashiCorp.terraform"],
+            "settings": {
+                "terraform.languageServer.enable": true
+            }
+        }
+    },
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

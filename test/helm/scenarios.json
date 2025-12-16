@@ -1,0 +1,18 @@
+{
+    "with-helmfile": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "helm": {
+                "installHelmfile": true
+            }
+        }
+    },
+    "with-plugins": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "helm": {
+                "installHelmDiff": true
+            }
+        }
+    }
+}

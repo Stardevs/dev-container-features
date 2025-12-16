@@ -1,0 +1,30 @@
+{
+    "id": "cilium-cli",
+    "version": "1.0.0",
+    "name": "Cilium CLI",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/cilium-cli",
+    "description": "Installs Cilium CLI for managing Cilium CNI and Hubble observability.",
+    "options": {
+        "ciliumVersion": {
+            "type": "string",
+            "proposals": ["latest", "0.16.0", "0.15.0", "0.14.0"],
+            "default": "latest",
+            "description": "Cilium CLI version to install"
+        },
+        "installHubble": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install Hubble CLI for network observability"
+        },
+        "hubbleVersion": {
+            "type": "string",
+            "proposals": ["latest", "1.16.0", "1.15.0"],
+            "default": "latest",
+            "description": "Hubble CLI version (only used if installHubble is true)"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/Stardevs/devcontainer-features/kubectl-kubectx-kubens"
+    ]
+}

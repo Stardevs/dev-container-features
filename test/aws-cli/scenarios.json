@@ -1,0 +1,18 @@
+{
+    "with-session-manager": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "aws-cli": {
+                "installSessionManager": true
+            }
+        }
+    },
+    "with-sam-cli": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "aws-cli": {
+                "installSamCli": true
+            }
+        }
+    }
+}

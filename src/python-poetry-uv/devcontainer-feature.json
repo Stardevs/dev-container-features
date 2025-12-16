@@ -1,0 +1,50 @@
+{
+    "id": "python-poetry-uv",
+    "version": "1.0.0",
+    "name": "Python with Poetry and uv",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/python-poetry-uv",
+    "description": "Installs Python with Poetry package manager and uv (ultra-fast Python package installer).",
+    "options": {
+        "pythonVersion": {
+            "type": "string",
+            "proposals": ["3.12", "3.11", "3.10", "3.9", "system"],
+            "default": "3.12",
+            "description": "Python version to install ('system' uses pre-installed Python)"
+        },
+        "poetryVersion": {
+            "type": "string",
+            "proposals": ["latest", "1.8.0", "1.7.0", "none"],
+            "default": "latest",
+            "description": "Poetry version to install ('none' to skip)"
+        },
+        "uvVersion": {
+            "type": "string",
+            "proposals": ["latest", "0.5.0", "0.4.0", "none"],
+            "default": "latest",
+            "description": "uv version to install ('none' to skip)"
+        },
+        "installPipx": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install pipx for isolated tool installations"
+        },
+        "additionalTools": {
+            "type": "string",
+            "default": "",
+            "description": "Comma-separated list of additional Python tools to install via pipx (e.g., 'black,ruff,mypy')"
+        }
+    },
+    "containerEnv": {
+        "POETRY_VIRTUALENVS_IN_PROJECT": "true",
+        "UV_CACHE_DIR": "/tmp/uv-cache"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["ms-python.python", "charliermarsh.ruff"],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/bin/python3"
+            }
+        }
+    },
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

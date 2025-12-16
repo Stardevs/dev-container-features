@@ -1,0 +1,21 @@
+{
+    "all-tools": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "argo-cli": {
+                "argoWorkflowsVersion": "latest",
+                "argoCdVersion": "latest",
+                "argoRolloutsVersion": "latest"
+            }
+        }
+    },
+    "workflows-only": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "argo-cli": {
+                "argoWorkflowsVersion": "latest",
+                "argoCdVersion": "none"
+            }
+        }
+    }
+}

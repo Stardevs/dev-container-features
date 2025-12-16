@@ -1,0 +1,45 @@
+{
+    "id": "helm",
+    "version": "1.0.0",
+    "name": "Helm",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/helm",
+    "description": "Installs Helm, the package manager for Kubernetes, with optional plugins.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": ["latest", "3.16.0", "3.15.0", "3.14.0"],
+            "default": "latest",
+            "description": "Helm version to install"
+        },
+        "installHelmDiff": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install helm-diff plugin"
+        },
+        "installHelmSecrets": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install helm-secrets plugin"
+        },
+        "installHelmfile": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install Helmfile for declarative Helm deployments"
+        },
+        "helmfileVersion": {
+            "type": "string",
+            "proposals": ["latest", "0.169.0", "0.168.0"],
+            "default": "latest",
+            "description": "Helmfile version (only used if installHelmfile is true)"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["Tim-Koehler.helm-intellisense"]
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/Stardevs/devcontainer-features/kubectl-kubectx-kubens"
+    ]
+}

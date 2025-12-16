@@ -1,0 +1,18 @@
+{
+    "go122": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "golang-lint": {
+                "goVersion": "1.22"
+            }
+        }
+    },
+    "without-tools": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "golang-lint": {
+                "installGoTools": false
+            }
+        }
+    }
+}

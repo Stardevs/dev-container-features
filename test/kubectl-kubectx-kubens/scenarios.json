@@ -1,0 +1,18 @@
+{
+    "with-k9s": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "kubectl-kubectx-kubens": {
+                "installK9s": true
+            }
+        }
+    },
+    "with-krew": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "kubectl-kubectx-kubens": {
+                "installKrew": true
+            }
+        }
+    }
+}

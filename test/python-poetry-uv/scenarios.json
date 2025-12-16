@@ -1,0 +1,26 @@
+{
+    "python311": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "python-poetry-uv": {
+                "pythonVersion": "3.11"
+            }
+        }
+    },
+    "poetry-only": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "python-poetry-uv": {
+                "uvVersion": "none"
+            }
+        }
+    },
+    "with-tools": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "python-poetry-uv": {
+                "additionalTools": "black,ruff"
+            }
+        }
+    }
+}

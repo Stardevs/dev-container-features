@@ -1,0 +1,48 @@
+{
+    "id": "kubectl-kubectx-kubens",
+    "version": "1.0.0",
+    "name": "kubectl, kubectx, and kubens",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/kubectl-kubectx-kubens",
+    "description": "Installs kubectl, kubectx, and kubens for Kubernetes cluster management with context and namespace switching.",
+    "options": {
+        "kubectlVersion": {
+            "type": "string",
+            "proposals": ["latest", "1.31.0", "1.30.0", "1.29.0"],
+            "default": "latest",
+            "description": "kubectl version to install"
+        },
+        "kubectxVersion": {
+            "type": "string",
+            "proposals": ["latest", "0.9.5", "0.9.4"],
+            "default": "latest",
+            "description": "kubectx/kubens version to install"
+        },
+        "installKrew": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install Krew kubectl plugin manager"
+        },
+        "krewPlugins": {
+            "type": "string",
+            "default": "",
+            "description": "Comma-separated list of Krew plugins to install (e.g., 'ctx,ns,neat')"
+        },
+        "installK9s": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install K9s terminal UI for Kubernetes"
+        },
+        "k9sVersion": {
+            "type": "string",
+            "proposals": ["latest", "0.32.0", "0.31.0"],
+            "default": "latest",
+            "description": "K9s version (only used if installK9s is true)"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["ms-kubernetes-tools.vscode-kubernetes-tools"]
+        }
+    },
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

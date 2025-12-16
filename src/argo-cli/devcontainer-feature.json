@@ -1,0 +1,31 @@
+{
+    "id": "argo-cli",
+    "version": "1.0.0",
+    "name": "Argo CLI Tools",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/argo-cli",
+    "description": "Installs Argo CLI tools including Argo Workflows CLI, Argo CD CLI, and Argo Rollouts kubectl plugin.",
+    "options": {
+        "argoWorkflowsVersion": {
+            "type": "string",
+            "proposals": ["latest", "3.6.0", "3.5.0", "none"],
+            "default": "none",
+            "description": "Argo Workflows CLI version ('none' to skip)"
+        },
+        "argoCdVersion": {
+            "type": "string",
+            "proposals": ["latest", "2.13.0", "2.12.0", "none"],
+            "default": "latest",
+            "description": "Argo CD CLI version ('none' to skip)"
+        },
+        "argoRolloutsVersion": {
+            "type": "string",
+            "proposals": ["latest", "1.7.0", "1.6.0", "none"],
+            "default": "none",
+            "description": "Argo Rollouts kubectl plugin version ('none' to skip)"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/Stardevs/devcontainer-features/kubectl-kubectx-kubens"
+    ]
+}

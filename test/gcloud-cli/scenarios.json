@@ -1,0 +1,18 @@
+{
+    "with-gke-plugin": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "gcloud-cli": {
+                "installGkeAuthPlugin": true
+            }
+        }
+    },
+    "with-components": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "gcloud-cli": {
+                "installComponents": "pubsub-emulator"
+            }
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "without-hubble": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "cilium-cli": {
+                "installHubble": false
+            }
+        }
+    },
+    "specific-version": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "cilium-cli": {
+                "ciliumVersion": "0.16.0"
+            }
+        }
+    }
+}

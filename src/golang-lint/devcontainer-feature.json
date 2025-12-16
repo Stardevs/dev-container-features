@@ -1,0 +1,49 @@
+{
+    "id": "golang-lint",
+    "version": "1.0.0",
+    "name": "Go with golangci-lint",
+    "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/golang-lint",
+    "description": "Installs Go programming language with golangci-lint and common Go development tools.",
+    "options": {
+        "goVersion": {
+            "type": "string",
+            "proposals": ["latest", "1.23", "1.22", "1.21", "none"],
+            "default": "latest",
+            "description": "Go version to install ('none' if Go is already installed)"
+        },
+        "golangciLintVersion": {
+            "type": "string",
+            "proposals": ["latest", "1.62.0", "1.61.0", "1.60.0"],
+            "default": "latest",
+            "description": "golangci-lint version to install"
+        },
+        "installGoTools": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install common Go tools (gopls, dlv, staticcheck, etc.)"
+        },
+        "goPath": {
+            "type": "string",
+            "default": "/go",
+            "description": "GOPATH directory"
+        }
+    },
+    "containerEnv": {
+        "GOROOT": "/usr/local/go",
+        "GOPATH": "/go",
+        "PATH": "/go/bin:/usr/local/go/bin:${PATH}"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["golang.Go"],
+            "settings": {
+                "go.useLanguageServer": true,
+                "go.lintTool": "golangci-lint",
+                "go.lintFlags": ["--fast"]
+            }
+        }
+    },
+    "capAdd": ["SYS_PTRACE"],
+    "securityOpt": ["seccomp=unconfined"],
+    "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

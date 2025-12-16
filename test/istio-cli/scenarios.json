@@ -1,0 +1,18 @@
+{
+    "specific-version": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "istio-cli": {
+                "version": "1.23.0"
+            }
+        }
+    },
+    "without-completion": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "istio-cli": {
+                "enableAutoCompletion": false
+            }
+        }
+    }
+}
