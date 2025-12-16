@@ -1,6 +1,6 @@
 {
     "id": "golang-lint",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Go with golangci-lint",
     "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/golang-lint",
     "description": "Installs Go programming language with golangci-lint and common Go development tools.",

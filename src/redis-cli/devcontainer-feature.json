@@ -1,6 +1,6 @@
 {
     "id": "redis-cli",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Redis CLI",
     "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/redis-cli",
     "description": "Installs Redis CLI tools including redis-cli, and optionally redis-server for local development.",

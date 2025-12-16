@@ -1,6 +1,6 @@
 {
     "id": "ebpf",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "eBPF Development Tools",
     "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/ebpf",
     "description": "Installs eBPF development and tracing tools including BCC, bpftrace, libbpf, and common utilities.",

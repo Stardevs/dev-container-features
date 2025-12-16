@@ -1,6 +1,6 @@
 {
     "id": "python-poetry-uv",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Python with Poetry and uv",
     "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/python-poetry-uv",
     "description": "Installs Python with Poetry package manager and uv (ultra-fast Python package installer).",

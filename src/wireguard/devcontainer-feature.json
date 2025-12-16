@@ -1,6 +1,6 @@
 {
     "id": "wireguard",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "WireGuard",
     "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/wireguard",
     "description": "Installs WireGuard VPN tools including wg, wg-quick, and optional wireguard-go for userspace implementation.",

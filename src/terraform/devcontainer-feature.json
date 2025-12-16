@@ -1,6 +1,6 @@
 {
     "id": "terraform",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Terraform with TFLint and Terragrunt",
     "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/terraform",
     "description": "Installs Terraform CLI with optional TFLint, Terragrunt, terraform-docs, and tfsec.",

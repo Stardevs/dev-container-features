@@ -1,6 +1,6 @@
 {
     "id": "argo-cli",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Argo CLI Tools",
     "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/argo-cli",
     "description": "Installs Argo CLI tools including Argo Workflows CLI, Argo CD CLI, and Argo Rollouts kubectl plugin.",

@@ -1,6 +1,6 @@
 {
     "id": "wss",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "WebSocket and Tunneling Tools",
     "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/wss",
     "description": "Installs WebSocket tools (wscat, websocat), wstunnel, Cloudflare Tunnel (cloudflared), and Cloudflare Wrangler CLI.",

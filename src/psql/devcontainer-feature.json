@@ -1,6 +1,6 @@
 {
     "id": "psql",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "PostgreSQL Client (psql)",
     "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/psql",
     "description": "Installs PostgreSQL client tools including psql, pg_dump, pg_restore, and optionally PostgreSQL server.",

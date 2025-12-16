@@ -1,6 +1,6 @@
 {
     "id": "istio-cli",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Istio CLI (istioctl)",
     "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/istio-cli",
     "description": "Installs istioctl, the command-line tool for Istio service mesh management.",

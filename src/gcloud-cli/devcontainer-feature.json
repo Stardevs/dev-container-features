@@ -1,6 +1,6 @@
 {
     "id": "gcloud-cli",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Google Cloud CLI",
     "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/gcloud-cli",
     "description": "Installs the Google Cloud CLI (gcloud) with optional components.",

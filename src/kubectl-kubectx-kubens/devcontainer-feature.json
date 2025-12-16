@@ -1,6 +1,6 @@
 {
     "id": "kubectl-kubectx-kubens",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "kubectl, kubectx, and kubens",
     "documentationURL": "https://github.com/Stardevs/devcontainer-features/tree/main/src/kubectl-kubectx-kubens",
     "description": "Installs kubectl, kubectx, and kubens for Kubernetes cluster management with context and namespace switching.",

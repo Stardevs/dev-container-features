@@ -1,6 +1,6 @@
 {
     "id": "proxy-dpi",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Proxy and Deep Packet Inspection Tools",
     "documentationURL": "https://github.com/Stardevs/dev-container-features/tree/main/src/proxy-dpi",
     "description": "Installs proxy and deep packet inspection tools including mitmproxy, Wireshark/tshark, and squid transparent proxy.",
