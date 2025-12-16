@@ -10,6 +10,9 @@ ALLOW_GOOGLE="${ALLOWGOOGLE:-"false"}"
 ALLOW_AWS="${ALLOWAWS:-"false"}"
 ENABLE_ON_START="${ENABLEONSTART:-"false"}"
 BLOCK_VERIFICATION_DOMAIN="${BLOCKVERIFICATIONDOMAIN:-"example.com"}"
+REMOTE_USER="${REMOTEUSER:-""}"
+FIX_WORKSPACE_PERMISSIONS="${FIXWORKSPACEPERMISSIONS:-"false"}"
+WORKSPACE_PATH="${WORKSPACEPATH:-"/workspace"}"
 
 # Ensure running as root
 if [ "$(id -u)" -ne 0 ]; then
@@ -247,14 +250,21 @@ DISABLE_SCRIPT
 
 chmod +x /usr/local/bin/disable-firewall.sh
 
-# Create configuration file with the domains
+# Create configuration file with the domains and entrypoint settings
 cat > /etc/firewall.conf << EOF
 # Firewall configuration
-# Modify these values and run 'sudo init-firewall.sh' to apply
+# Modify these values and run 'sudo firewall start' to apply
 
+# Domain allowlist
 FIREWALL_ALLOWED_DOMAINS="${DOMAINS_LIST}"
 FIREWALL_ALLOW_GITHUB="${ALLOW_GITHUB}"
 FIREWALL_BLOCK_VERIFICATION_DOMAIN="${BLOCK_VERIFICATION_DOMAIN}"
+
+# Entrypoint settings
+FIREWALL_ENABLE_ON_START="${ENABLE_ON_START}"
+FIREWALL_FIX_WORKSPACE_PERMISSIONS="${FIX_WORKSPACE_PERMISSIONS}"
+FIREWALL_WORKSPACE_PATH="${WORKSPACE_PATH}"
+FIREWALL_WORKSPACE_USER="${REMOTE_USER}"
 EOF
 
 # Create wrapper that sources config
@@ -272,6 +282,16 @@ case "$1" in
     stop|disable)
         sudo /usr/local/bin/disable-firewall.sh
         ;;
+    entrypoint)
+        # Run the full entrypoint (includes permission fixes if enabled)
+        if [ -f /etc/firewall.conf ]; then
+            source /etc/firewall.conf
+            export FIREWALL_ENABLE_ON_START FIREWALL_FIX_WORKSPACE_PERMISSIONS
+            export FIREWALL_WORKSPACE_PATH FIREWALL_WORKSPACE_USER
+            export FIREWALL_ALLOWED_DOMAINS FIREWALL_ALLOW_GITHUB FIREWALL_BLOCK_VERIFICATION_DOMAIN
+        fi
+        sudo /usr/local/bin/firewall-entrypoint.sh
+        ;;
     status)
         echo "=== Firewall Status ==="
         echo "IPTables rules:"
@@ -281,12 +301,13 @@ case "$1" in
         sudo ipset list allowed-domains 2>/dev/null || echo "No ipset configured or need sudo"
         ;;
     *)
-        echo "Usage: firewall {start|stop|status}"
+        echo "Usage: firewall {start|stop|status|entrypoint}"
         echo ""
         echo "Commands:"
-        echo "  start   - Enable the whitelist firewall"
-        echo "  stop    - Disable the firewall (allow all traffic)"
-        echo "  status  - Show current firewall rules"
+        echo "  start      - Enable the whitelist firewall"
+        echo "  stop       - Disable the firewall (allow all traffic)"
+        echo "  status     - Show current firewall rules"
+        echo "  entrypoint - Run full entrypoint (firewall + optional permission fixes)"
         exit 1
         ;;
 esac
@@ -294,21 +315,107 @@ WRAPPER_SCRIPT
 
 chmod +x /usr/local/bin/firewall
 
+# Create entrypoint script
+cat > /usr/local/bin/firewall-entrypoint.sh << 'ENTRYPOINT_SCRIPT'
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+# Configuration sourced from environment or defaults
+ENABLE_ON_START="${FIREWALL_ENABLE_ON_START:-false}"
+FIX_WORKSPACE_PERMISSIONS="${FIREWALL_FIX_WORKSPACE_PERMISSIONS:-false}"
+WORKSPACE_PATH="${FIREWALL_WORKSPACE_PATH:-/workspace}"
+WORKSPACE_USER="${FIREWALL_WORKSPACE_USER:-}"
+
+echo "=== Firewall Entrypoint ==="
+
+# Fix workspace permissions if enabled
+if [ "${FIX_WORKSPACE_PERMISSIONS}" = "true" ] && [ -n "${WORKSPACE_USER}" ]; then
+    echo "Fixing workspace permissions for ${WORKSPACE_USER}..."
+    if [ -d "${WORKSPACE_PATH}" ]; then
+        # Fast path: skip if already owned correctly
+        if [ "$(stat -c '%U' "${WORKSPACE_PATH}" 2>/dev/null || echo 'unknown')" != "${WORKSPACE_USER}" ]; then
+            # Handle git pack files specially (they may be read-only)
+            find "${WORKSPACE_PATH}" -path '*/.git/objects/pack/*' -type f -exec chmod u+w {} + 2>/dev/null || true
+            chown -R "${WORKSPACE_USER}:${WORKSPACE_USER}" "${WORKSPACE_PATH}" 2>/dev/null || true
+            find "${WORKSPACE_PATH}" -path '*/.git/objects/pack/*' -type f -exec chmod 444 {} + 2>/dev/null || true
+            echo "Workspace permissions fixed"
+        else
+            echo "Workspace permissions already correct, skipping"
+        fi
+    else
+        echo "Warning: Workspace path ${WORKSPACE_PATH} does not exist"
+    fi
+fi
+
+# Enable firewall if configured
+if [ "${ENABLE_ON_START}" = "true" ]; then
+    echo "Auto-starting firewall..."
+    # Source config and export for init-firewall.sh
+    if [ -f /etc/firewall.conf ]; then
+        source /etc/firewall.conf
+        export FIREWALL_ALLOWED_DOMAINS FIREWALL_ALLOW_GITHUB FIREWALL_BLOCK_VERIFICATION_DOMAIN
+    fi
+    /usr/local/bin/init-firewall.sh
+else
+    echo "Firewall auto-start disabled (enableOnStart=false)"
+fi
+
+echo "=== Entrypoint complete ==="
+ENTRYPOINT_SCRIPT
+
+chmod +x /usr/local/bin/firewall-entrypoint.sh
+
+# Create scoped sudoers configuration if remoteUser is specified
+if [ -n "${REMOTE_USER}" ] && [ "${REMOTE_USER}" != "root" ]; then
+    echo "Configuring scoped sudo for user: ${REMOTE_USER}"
+    cat > /etc/sudoers.d/firewall-feature << EOF
+# Scoped sudo for firewall feature
+# Only allows running specific firewall scripts, not full sudo access
+
+${REMOTE_USER} ALL=(root) NOPASSWD: /usr/local/bin/firewall-entrypoint.sh
+${REMOTE_USER} ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh
+${REMOTE_USER} ALL=(root) NOPASSWD: /usr/local/bin/disable-firewall.sh
+${REMOTE_USER} ALL=(root) NOPASSWD: /sbin/iptables
+${REMOTE_USER} ALL=(root) NOPASSWD: /sbin/iptables-save
+${REMOTE_USER} ALL=(root) NOPASSWD: /sbin/ipset
+${REMOTE_USER} ALL=(root) NOPASSWD: /usr/sbin/iptables
+${REMOTE_USER} ALL=(root) NOPASSWD: /usr/sbin/iptables-save
+${REMOTE_USER} ALL=(root) NOPASSWD: /usr/sbin/ipset
+EOF
+    chmod 0440 /etc/sudoers.d/firewall-feature
+    echo "Scoped sudo configured for user: ${REMOTE_USER}"
+fi
+
 # Cleanup
 apt-get clean
 rm -rf /var/lib/apt/lists/*
 
 echo "Firewall feature installation complete!"
 echo ""
-echo "To enable the firewall, run: sudo firewall start"
-echo "To disable the firewall, run: sudo firewall stop"
-echo "To check status, run: sudo firewall status"
+echo "Commands:"
+echo "  sudo firewall start      - Enable the whitelist firewall"
+echo "  sudo firewall stop       - Disable the firewall"
+echo "  sudo firewall status     - Show current firewall rules"
+echo "  sudo firewall entrypoint - Run full entrypoint (firewall + permission fixes)"
 echo ""
 echo "Configuration file: /etc/firewall.conf"
 
 # If enableOnStart is true, print a note about postStartCommand
 if [ "${ENABLE_ON_START}" = "true" ]; then
     echo ""
-    echo "NOTE: To auto-enable firewall on container start, add to devcontainer.json:"
-    echo '  "postStartCommand": "sudo firewall start"'
+    echo "=== Auto-Start Configuration ==="
+    echo "Add to your devcontainer.json:"
+    echo '  "postStartCommand": "sudo firewall entrypoint"'
+    echo ""
+    echo "Or run the entrypoint directly:"
+    echo '  "postStartCommand": "sudo /usr/local/bin/firewall-entrypoint.sh"'
+fi
+
+# If remoteUser is configured, show scoped sudo info
+if [ -n "${REMOTE_USER}" ] && [ "${REMOTE_USER}" != "root" ]; then
+    echo ""
+    echo "=== Scoped Sudo ==="
+    echo "Sudo configured for user '${REMOTE_USER}' with access to firewall scripts only."
+    echo "No full sudo access granted."
 fi

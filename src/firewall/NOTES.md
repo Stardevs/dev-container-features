@@ -25,6 +25,9 @@ This feature configures a whitelist-based firewall using iptables and ipset. Onl
 | allowAws | boolean | false | Allow AWS APIs |
 | enableOnStart | boolean | false | Auto-enable on container start |
 | blockVerificationDomain | string | example.com | Domain to verify blocking |
+| remoteUser | string | "" | Non-root user for scoped sudo (e.g., 'node', 'vscode') |
+| fixWorkspacePermissions | boolean | false | Fix workspace ownership on start |
+| workspacePath | string | /workspace | Path to workspace directory |
 
 ## Examples
 
@@ -80,7 +83,26 @@ This feature configures a whitelist-based firewall using iptables and ipset. Onl
             "enableOnStart": true
         }
     },
-    "postStartCommand": "sudo firewall start"
+    "postStartCommand": "sudo firewall entrypoint"
+}
+```
+
+### Auto-enable with scoped sudo (recommended)
+
+```json
+{
+    "features": {
+        "ghcr.io/Stardevs/dev-container-features/firewall:1": {
+            "allowGitHub": true,
+            "allowNpm": true,
+            "allowedDomains": "api.anthropic.com,sentry.io",
+            "enableOnStart": true,
+            "remoteUser": "node",
+            "fixWorkspacePermissions": true
+        }
+    },
+    "remoteUser": "node",
+    "postStartCommand": "sudo /usr/local/bin/firewall-entrypoint.sh"
 }
 ```
 
@@ -113,6 +135,12 @@ sudo firewall stop
 
 ```bash
 sudo firewall status
+```
+
+### Run Entrypoint (firewall + permission fixes)
+
+```bash
+sudo firewall entrypoint
 ```
 
 ## Configuration
@@ -198,6 +226,32 @@ curl https://api.github.com/zen
 sudo firewall stop
 ```
 
+## Scoped Sudo
+
+When `remoteUser` is specified, the feature creates a sudoers configuration that only allows running specific firewall scripts. This follows the principle of least privilege.
+
+### What's allowed
+
+The specified user can run:
+- `/usr/local/bin/firewall-entrypoint.sh`
+- `/usr/local/bin/init-firewall.sh`
+- `/usr/local/bin/disable-firewall.sh`
+- `/sbin/iptables` and `/usr/sbin/iptables`
+- `/sbin/iptables-save` and `/usr/sbin/iptables-save`
+- `/sbin/ipset` and `/usr/sbin/ipset`
+
+### What's NOT allowed
+
+- Full sudo access
+- Running arbitrary commands as root
+- Modifying system files outside of firewall scope
+
+### Configuration file location
+
+```
+/etc/sudoers.d/firewall-feature
+```
+
 ## Security Notes
 
 - The firewall uses a whitelist approach - only explicitly allowed destinations are reachable
@@ -205,3 +259,4 @@ sudo firewall stop
 - The host network is allowed for container-host communication
 - GitHub IPs are fetched dynamically and may change over time
 - Consider the security implications of each allowed domain
+- When using scoped sudo, the user only has access to firewall-related commands

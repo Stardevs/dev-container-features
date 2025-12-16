@@ -49,6 +49,21 @@
             "type": "string",
             "default": "example.com",
             "description": "Domain to verify firewall is blocking (should fail to connect)"
+        },
+        "remoteUser": {
+            "type": "string",
+            "default": "",
+            "description": "Non-root user to configure scoped sudo for (e.g., 'node', 'vscode'). When set, creates sudoers rules allowing only firewall scripts."
+        },
+        "fixWorkspacePermissions": {
+            "type": "boolean",
+            "default": false,
+            "description": "Fix workspace ownership to remoteUser on container start (requires remoteUser to be set)"
+        },
+        "workspacePath": {
+            "type": "string",
+            "default": "/workspace",
+            "description": "Path to workspace directory for permission fixes"
         }
     },
     "privileged": true,

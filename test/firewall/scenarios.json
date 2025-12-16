@@ -24,5 +24,18 @@
                 "allowedDomains": "api.anthropic.com,sentry.io"
             }
         }
+    },
+    "entrypoint-autostart": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "remoteUser": "vscode",
+        "features": {
+            "firewall": {
+                "allowGitHub": true,
+                "allowNpm": true,
+                "enableOnStart": true,
+                "remoteUser": "vscode",
+                "fixWorkspacePermissions": true
+            }
+        }
     }
 }

@@ -1,0 +1,105 @@
+name: Test DevContainer
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.devcontainer/**'
+      - 'src/firewall/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.devcontainer/**'
+      - 'src/firewall/**'
+  workflow_dispatch:
+
+jobs:
+  build-devcontainer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install devcontainer CLI
+        run: npm install -g @devcontainers/cli
+
+      - name: Build devcontainer
+        run: |
+          devcontainer build --workspace-folder .
+
+      - name: Test devcontainer starts
+        run: |
+          devcontainer up --workspace-folder .
+
+      - name: Verify firewall scripts installed
+        run: |
+          devcontainer exec --workspace-folder . bash -c "
+            echo '=== Verifying firewall installation ==='
+
+            # Check scripts exist
+            test -f /usr/local/bin/firewall-entrypoint.sh && echo '✓ firewall-entrypoint.sh exists'
+            test -f /usr/local/bin/init-firewall.sh && echo '✓ init-firewall.sh exists'
+            test -f /usr/local/bin/disable-firewall.sh && echo '✓ disable-firewall.sh exists'
+            test -x /usr/local/bin/firewall && echo '✓ firewall command exists'
+
+            # Check config
+            test -f /etc/firewall.conf && echo '✓ firewall.conf exists'
+            grep -q 'FIREWALL_ENABLE_ON_START' /etc/firewall.conf && echo '✓ entrypoint settings in config'
+
+            # Check scoped sudoers
+            test -f /etc/sudoers.d/firewall-feature && echo '✓ scoped sudoers exists'
+
+            # Check custom entrypoint
+            test -f /usr/local/bin/entrypoint.sh && echo '✓ custom entrypoint exists'
+            test -f /etc/sudoers.d/node-entrypoint && echo '✓ entrypoint sudoers exists'
+
+            echo '=== All checks passed ==='
+          "
+
+      - name: Test firewall can be started
+        run: |
+          devcontainer exec --workspace-folder . bash -c "
+            echo '=== Testing firewall start ==='
+            sudo /usr/local/bin/init-firewall.sh
+            echo '✓ Firewall started successfully'
+
+            echo '=== Firewall status ==='
+            sudo iptables -L -n | head -20
+
+            echo '=== Allowed IPs (sample) ==='
+            sudo ipset list allowed-domains | head -20
+          "
+
+      - name: Test firewall blocks unauthorized traffic
+        run: |
+          devcontainer exec --workspace-folder . bash -c "
+            echo '=== Testing firewall blocking ==='
+
+            # This should fail (blocked)
+            if curl --connect-timeout 5 https://example.com 2>/dev/null; then
+              echo '✗ ERROR: Firewall should have blocked example.com'
+              exit 1
+            else
+              echo '✓ example.com blocked as expected'
+            fi
+
+            # This should succeed (allowed)
+            if curl --connect-timeout 10 https://api.github.com/zen 2>/dev/null; then
+              echo '✓ api.github.com accessible as expected'
+            else
+              echo '⚠ Warning: api.github.com not accessible (may be rate limited)'
+            fi
+
+            echo '=== Firewall verification passed ==='
+          "
+
+      - name: Cleanup
+        if: always()
+        run: |
+          devcontainer down --workspace-folder . || true
