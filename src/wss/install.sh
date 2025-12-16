@@ -100,14 +100,9 @@ if [ "${INSTALL_WSTUNNEL}" = "true" ]; then
     TEMP_DIR=$(mktemp -d)
     cd "${TEMP_DIR}"
 
-    # Map architecture for wstunnel
-    case "${ARCHITECTURE}" in
-        amd64) WT_ARCH="x86_64" ;;
-        arm64) WT_ARCH="aarch64" ;;
-    esac
-
+    # wstunnel uses amd64/arm64 naming
     curl -fsSL -o wstunnel.tar.gz \
-        "https://github.com/erebe/wstunnel/releases/download/v${WSTUNNEL_VERSION}/wstunnel_${WSTUNNEL_VERSION}_linux_${WT_ARCH}.tar.gz"
+        "https://github.com/erebe/wstunnel/releases/download/v${WSTUNNEL_VERSION}/wstunnel_${WSTUNNEL_VERSION}_linux_${ARCHITECTURE}.tar.gz"
 
     tar -xzf wstunnel.tar.gz
     install -m 755 wstunnel /usr/local/bin/wstunnel

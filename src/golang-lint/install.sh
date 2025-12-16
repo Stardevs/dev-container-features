@@ -51,6 +51,17 @@ if [ "${GO_VERSION}" != "none" ]; then
     if [ "${GO_VERSION}" = "latest" ]; then
         GO_VERSION=$(curl -fsSL "https://go.dev/VERSION?m=text" | head -n 1 | sed 's/go//')
         echo "Resolved latest Go version: ${GO_VERSION}"
+    else
+        # Handle partial versions like "1.22" -> find latest 1.22.x
+        if [[ ! "${GO_VERSION}" =~ \.[0-9]+\.[0-9]+$ ]]; then
+            # Try to get the latest patch version for this minor
+            RESOLVED=$(curl -fsSL "https://go.dev/dl/?mode=json" 2>/dev/null | \
+                grep -o "go${GO_VERSION}\.[0-9]*" | head -1 | sed 's/go//')
+            if [ -n "${RESOLVED}" ]; then
+                echo "Resolved ${GO_VERSION} to ${RESOLVED}"
+                GO_VERSION="${RESOLVED}"
+            fi
+        fi
     fi
 
     # Download and install
